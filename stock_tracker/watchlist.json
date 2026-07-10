@@ -1,0 +1,8 @@
+{
+  "symbols": ["MU", "TSM", "SOXX"],
+  "schedule": {
+    "time": "21:30",
+    "timezone": "Asia/Taipei",
+    "note": "美股開盤前（台灣時間 21:30，約等於美東 9:30 AM 開盤前）"
+  }
+}
