@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="發票記帳">
+  <link rel="apple-touch-icon" href="/icon-180.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="stylesheet" href="/static/style.css">
+  <title>發票記帳</title>
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn" id="prevMonth" aria-label="上個月">
+      <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <h1 id="monthLabel">—</h1>
+    <button class="icon-btn" id="nextMonth" aria-label="下個月">
+      <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <section class="view" id="view-home">
+      <div class="hero card">
+        <div class="hero-label">本月支出</div>
+        <div class="hero-total" id="monthTotal">$0</div>
+        <div class="hero-sub" id="monthCompare">&nbsp;</div>
+        <div class="donut-wrap">
+          <svg class="donut" id="donut" viewBox="0 0 120 120"></svg>
+          <ul class="legend" id="legend"></ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>每日支出</h2></div>
+        <div class="bars" id="dailyBars"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>最近記錄</h2>
+          <button class="link" data-goto="list">全部</button>
+        </div>
+        <ul class="entries" id="recentList"></ul>
+      </div>
+    </section>
+
+    <section class="view" id="view-list" hidden>
+      <div class="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>
+        <input id="searchInput" type="search" placeholder="搜尋商家、品項、備註" enterkeyhint="search">
+      </div>
+      <div class="chips" id="filterChips"></div>
+      <div class="card"><ul class="entries" id="fullList"></ul></div>
+    </section>
+
+    <section class="view" id="view-settings" hidden>
+      <div class="card">
+        <div class="card-head"><h2>手機連線</h2></div>
+        <p class="muted">在 iPhone 的 Safari 打開下面的網址，按分享鍵再選「加入主畫面」，就會像 App 一樣出現在桌面。</p>
+        <ul class="addr" id="addresses"></ul>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>本機 AI 辨識</h2></div>
+        <div id="aiStatus" class="muted">檢查中…</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>分類</h2></div>
+        <div class="chips editable" id="categoryEditor"></div>
+        <form class="inline-form" id="addCategoryForm">
+          <input id="newCategory" maxlength="12" placeholder="新增分類，例如：寵物">
+          <button class="btn small">新增</button>
+        </form>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>匯出</h2></div>
+        <div class="row-btns">
+          <a class="btn ghost" id="exportMonth">匯出本月 CSV</a>
+          <a class="btn ghost" href="/api/export.csv">匯出全部</a>
+        </div>
+        <p class="muted small" id="dataDir"></p>
+      </div>
+    </section>
+  </main>
+
+  <button class="fab" id="captureBtn" aria-label="拍發票">
+    <svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+    <span>拍發票</span>
+  </button>
+  <input type="file" id="fileInput" accept="image/*" multiple hidden>
+
+  <nav class="tabbar">
+    <button data-goto="home" class="active">
+      <svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>總覽
+    </button>
+    <button data-goto="list">
+      <svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h9"/></svg>明細
+    </button>
+    <button id="manualBtn">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>手動記
+    </button>
+    <button data-goto="settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>設定
+    </button>
+  </nav>
+
+  <div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
+  <form class="sheet" id="editSheet" hidden>
+    <div class="sheet-grip"></div>
+    <div class="sheet-head">
+      <h2 id="sheetTitle">編輯</h2>
+      <button type="button" class="icon-btn" id="closeSheet" aria-label="關閉">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="notice" id="sheetNotice" hidden></div>
+    <div class="sheet-photo" id="sheetPhoto" hidden><img alt="發票照片"></div>
+    <label class="field amount-field">
+      <span>金額</span>
+      <div class="amount-input"><b>$</b><input id="fAmount" type="number" inputmode="decimal" step="any" required></div>
+    </label>
+    <label class="field"><span>商家</span><input id="fMerchant" placeholder="例如：全家便利商店"></label>
+    <label class="field"><span>日期</span><input id="fDate" type="date" required></label>
+    <div class="field"><span>分類</span><div class="chips" id="fCategory"></div></div>
+    <label class="field"><span>備註</span><input id="fNote" placeholder="選填"></label>
+    <label class="check"><input type="checkbox" id="fRemember" checked> 以後這家店自動用這個分類</label>
+    <details class="items" id="itemsBox" hidden>
+      <summary>品項</summary>
+      <ul id="itemsList"></ul>
+    </details>
+    <div class="meta" id="sheetMeta"></div>
+    <div class="sheet-actions">
+      <button type="button" class="btn danger ghost" id="deleteBtn">刪除</button>
+      <button type="button" class="btn ghost" id="retryBtn" hidden>重新辨識</button>
+      <button type="submit" class="btn">儲存</button>
+    </div>
+  </form>
+
+  <div class="viewer" id="viewer" hidden><img alt="發票照片"></div>
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
