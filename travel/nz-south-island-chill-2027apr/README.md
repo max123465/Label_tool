@@ -10,3 +10,8 @@
 GitHub 檔案頁按 **Download raw file**。兩個檔是同一本。
 
 CSV 可直接匯入 Google 試算表。
+
+路線圖（南島輪廓＋過夜點＋行車線）：
+
+- `south_island_route_map.png`
+- `south_island_route_map.svg`
