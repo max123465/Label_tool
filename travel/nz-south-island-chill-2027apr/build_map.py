@@ -62,48 +62,40 @@ PAD = (70, 200, 210, 210)  # L T R B
 STOPS = [
     ("chc", 172.6362, -43.5321, "基督城", "overnight", 18, -8, "4/17、5/3"),
     ("kai", 173.6814, -42.4008, "凱庫拉", "overnight", 16, -6, "4/18–19 賞鯨"),
-    ("han", 172.8286, -42.5227, "漢默泉", "pass", 16, 10, "4/20 過路泡湯"),
-    ("hok", 170.9667, -42.7167, "霍基蒂卡", "overnight", -122, -10, "4/20"),
-    ("fra", 170.1819, -43.3881, "弗蘭茲", "overnight", -108, 16, "4/21–23 冰川"),
-    ("wan", 169.1321, -44.7042, "瓦納卡", "pass", 16, -22, "4/24 過路"),
-    ("arr", 168.8347, -44.9406, "箭鎮", "overnight", -92, 18, "4/24–26 楓葉"),
-    ("tea", 167.7178, -45.4160, "蒂阿瑙", "overnight", -108, 10, "4/27–28"),
-    ("mil", 167.9256, -44.6714, "米佛峽灣", "side", -128, -20, "4/28 當日來回"),
-    ("oma", 169.9667, -44.4869, "Omarama", "pass", 16, 12, "4/29 可泡湯"),
-    ("puk", 170.2093, -44.1683, "普卡基", "overnight", 16, -4, "4/29–30"),
-    ("mtc", 170.0963, -43.7340, "庫克山", "side", -18, -28, "4/30 當日來回"),
-    ("tek", 170.4774, -44.0047, "蒂卡波", "overnight", 16, 10, "5/1–2 觀星"),
+    ("tek", 170.4774, -44.0047, "蒂卡波", "overnight", 16, 12, "4/20–21、5/2"),
+    ("mtc", 170.0963, -43.7340, "庫克山村", "overnight", -118, -22, "4/22–24 塔斯曼冰川"),
+    ("puk", 170.2093, -44.1683, "普卡基", "overnight", 16, -4, "4/25–26"),
+    ("wan", 169.1321, -44.7042, "瓦納卡", "pass", -90, -18, "4/27 可停"),
+    ("arr", 168.8347, -44.9406, "箭鎮", "overnight", -86, 16, "4/27–29 楓葉"),
+    ("tea", 167.7178, -45.4160, "蒂阿瑙", "overnight", -108, 10, "4/30–5/1"),
+    ("mil", 167.9256, -44.6714, "米佛峽灣", "side", -128, -20, "5/1 當日來回"),
 ]
 
 MAIN_ROUTE = [
-    # CHC → Kaikoura (SH1)
     (172.6362, -43.5321),
     (172.7310, -43.1560),
     (173.2740, -42.8130),
     (173.6814, -42.4008),
-    # Kaikoura → Hanmer → Lewis → Hokitika
-    (173.2000, -42.5200),
-    (172.8286, -42.5227),
-    (172.4000, -42.3800),
-    (172.1810, -42.3350),
-    (171.8650, -42.1160),
-    (171.2110, -42.4500),
-    (170.9667, -42.7167),
-    # West coast south
-    (170.8140, -42.8960),
-    (170.3650, -43.2620),
-    (170.1819, -43.3881),
-    (170.0180, -43.4640),
-    (169.78, -43.58),
-    (169.60, -43.60),
-    (169.35, -43.72),
-    (169.0560, -43.8810),
-    (169.3560, -44.1070),
-    (169.2320, -44.2330),
+    (173.2740, -42.8130),
+    (172.7310, -43.1560),
+    (172.6362, -43.5321),
+    (172.0230, -43.7560),
+    (171.7490, -43.9050),
+    (171.2440, -44.0920),
+    (170.8290, -44.1010),
+    (170.4774, -44.0047),
+    (170.2093, -44.1683),
+    (170.1358, -44.0891),
+    (170.0963, -43.7340),
+    (170.2093, -44.1683),
+    (170.1010, -44.2580),
+    (169.9667, -44.4869),
+    (169.6110, -44.5910),
+    (169.4270, -44.8470),
+    (169.2000, -45.0380),
     (169.1321, -44.7042),
     (168.9500, -44.8740),
     (168.8347, -44.9406),
-    # Arrowtown → Te Anau
     (168.7390, -45.0180),
     (168.7140, -45.3330),
     (168.6790, -45.4570),
@@ -123,7 +115,6 @@ AFTER_MILFORD = [
     (169.6110, -44.5910),
     (169.9667, -44.4869),
     (170.1010, -44.2580),
-    (170.2093, -44.1683),
     (170.4774, -44.0047),
     (170.8290, -44.1010),
     (171.2440, -44.0920),
@@ -213,7 +204,6 @@ def render_png(coast: list[list[float]], s: float, ox: float, oy: float) -> Imag
     main = polyline(MAIN_ROUTE, s, ox, oy) + polyline(AFTER_MILFORD, s, ox, oy)[1:]
     draw.line(main, fill=ROUTE, width=7, joint="curve")
     draw_dashed(draw, polyline(MILFORD, s, ox, oy), SIDE, 5)
-    draw_dashed(draw, polyline(MT_COOK, s, ox, oy), SIDE, 5)
 
     title = font(42)
     sub = font(22)
@@ -237,14 +227,14 @@ def render_png(coast: list[list[float]], s: float, ox: float, oy: float) -> Imag
     draw.line((90, ly + 38, 170, ly + 38), fill=ROUTE, width=7)
     draw.text((184, ly + 24), "過夜行車線（順時針）", font=small, fill=INK)
     draw_dashed(draw, [(400, ly + 38), (480, ly + 38)], SIDE, 5)
-    draw.text((494, ly + 24), "當日來回：米佛、庫克山", font=small, fill=INK)
+    draw.text((494, ly + 24), "當日來回：米佛峽灣", font=small, fill=INK)
     draw.ellipse((800, ly + 29, 818, ly + 47), fill=OVERNIGHT, outline=WHITE, width=2)
     draw.text((828, ly + 24), "過夜城鎮", font=small, fill=INK)
     draw.ellipse((980, ly + 29, 996, ly + 45), fill=WHITE, outline=SIDE, width=3)
     draw.text((1008, ly + 24), "過路／一日景點", font=small, fill=INK)
     draw.text(
         (90, ly + 70),
-        "路線沿 SH1、Lewis Pass、西岸、Haast、箭鎮、蒂阿瑙、Lindis Pass 回麥肯齊盆地。海岸線簡化自 OpenStreetMap。",
+        "不走西岸。SH1 北上看鯨後南下麥肯齊，庫克山村做塔斯曼冰川健行，再去箭鎮、米佛。海岸線簡化自 OpenStreetMap。",
         font=small,
         fill=MUTED,
     )
@@ -259,7 +249,6 @@ def render_svg(coast: list[list[float]], s: float, ox: float, oy: float) -> str:
     land = [xy(lon, lat, s, ox, oy) for lon, lat in coast]
     main = polyline(MAIN_ROUTE, s, ox, oy) + polyline(AFTER_MILFORD, s, ox, oy)[1:]
     mil = polyline(MILFORD, s, ox, oy)
-    mtc = polyline(MT_COOK, s, ox, oy)
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">',
         f'<rect width="{W}" height="{H}" fill="#d6e2e8"/>',
@@ -273,7 +262,6 @@ def render_svg(coast: list[list[float]], s: float, ox: float, oy: float) -> str:
     parts += [
         f'<path d="{svg_path(main)}" fill="none" stroke="#b84e20" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>',
         f'<path d="{svg_path(mil)}" fill="none" stroke="#2f6370" stroke-width="5" stroke-dasharray="16 12" stroke-linecap="round"/>',
-        f'<path d="{svg_path(mtc)}" fill="none" stroke="#2f6370" stroke-width="5" stroke-dasharray="16 12" stroke-linecap="round"/>',
         '<text x="70" y="78" font-family="WenQuanYi Micro Hei, Noto Sans CJK, sans-serif" font-size="42" fill="#1c303a">紐西蘭南島  chill 自駕路線</text>',
         '<text x="70" y="120" font-family="WenQuanYi Micro Hei, Noto Sans CJK, sans-serif" font-size="22" fill="#5a6a72">2027/4/17 凌晨到基督城  ·  5/4 15:00 回程  ·  兩人 17 晚</text>',
     ]
